@@ -50,6 +50,9 @@ namespace LibIT.WebApi
 
             app.UseAuthorization();
 
+            SeederDB.SeedDataByAS(app.ApplicationServices);
+
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

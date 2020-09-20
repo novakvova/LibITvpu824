@@ -20,7 +20,7 @@ namespace LibIT.WebApi.Entities
             {
                 var roleresult = roleManager.CreateAsync(new DbRole
                 {
-                    Name = userRoleName
+                    Name = adminRoleName
 
                 }).Result;
             }
