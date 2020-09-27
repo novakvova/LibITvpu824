@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app.iml" group="libit/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-356160701/libit.iml" filepath="$PROJECT_DIR$/.idea/modules/-356160701/libit.iml" group="libit" />
+    </modules>
+  </component>
+</project>
