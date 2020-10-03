@@ -19,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         imageRequester = ImageRequester.getInstance();
         editImage = findViewById(R.id.chooseImage);
-        imageRequester.setImageFromUrl(editImage,"https://www.monsterenergy.com/media/uploads_image/2019/09/09/1600/800/6ea650cb9a77f4ac03b1c87fd8b21429.jpg?mod=v1_0485ae83b33a11d39f357c0a1ad1802f");
+        //String baseUrl="http://10.0.2.2:53558/";
+        String baseUrl="https://karpaty.tk/";
+        imageRequester.setImageFromUrl(editImage,baseUrl+"images/belka.jpg");
     }
 }
