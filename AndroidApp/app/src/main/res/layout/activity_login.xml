@@ -16,12 +16,17 @@
         android:paddingTop="56dp"
         android:paddingRight="24dp">
 
-        <!--        <ImageView-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="72dp"-->
-        <!--            android:layout_gravity="center_horizontal"-->
-        <!--            android:layout_marginBottom="24dp"-->
-        <!--            android:src="@drawable/logo" />-->
+        <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/chooseImageLogin"
+            android:layout_width="202dp"
+            android:layout_height="174dp"
+            android:layout_gravity="center_horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.499" />
 
         <!-- Email Label -->
         <com.google.android.material.textfield.TextInputLayout

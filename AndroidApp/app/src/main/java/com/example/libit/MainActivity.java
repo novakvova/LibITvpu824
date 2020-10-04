@@ -10,8 +10,6 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.example.libit.network.ImageRequester;
 
 public class MainActivity extends AppCompatActivity {
-
-
     private ImageRequester imageRequester;
     private NetworkImageView editImage;
 
