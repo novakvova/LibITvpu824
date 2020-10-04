@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         imageRequester = ImageRequester.getInstance();
         editImage = findViewById(R.id.chooseImage);
-        imageRequester.setImageFromUrl(editImage,"http://10.0.2.2:53558/images/testAvatarHen.jpg");
+        imageRequester.setImageFromUrl(editImage,"https://karpaty.tk/images/testAvatarHen.jpg");
     }
 
     public void btnLogin(View v) {
