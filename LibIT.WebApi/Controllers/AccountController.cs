@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using LibIT.WebApi.Entities;
 using LibIT.WebApi.Models;
 using LibIT.WebApi.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,14 +35,13 @@ namespace LibIT.WebApi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                //var errrors = CustomValidator.GetErrorsByModel(ModelState);
                 return BadRequest("Bad Model");
             }
 
             var user = _context.Users.FirstOrDefault(u => u.Email == model.Email);
             if (user == null)
             {
-                return BadRequest(new { invalid = "Даний користувач не знайденний" });
+                return BadRequest("Даний користувач не знайденний!");
             }
 
             var result = _signInManager
@@ -51,7 +49,7 @@ namespace LibIT.WebApi.Controllers
 
             if (!result.Succeeded)
             {
-                return BadRequest(new { invalid = "Невірно введений пароль" });
+                return BadRequest("Невірно введений пароль!");
             }
 
             await _signInManager.SignInAsync(user, isPersistent: false);
@@ -68,25 +66,25 @@ namespace LibIT.WebApi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest("Поганий запит");
             }
             var roleName = "User";
             var userReg = _context.Users.FirstOrDefault(x => x.Email == model.Email);
             if (userReg != null)
             {
-                return BadRequest(new { invalid = "Цей емейл вже зареєстровано." });
+                return BadRequest("Цей емейл вже зареєстровано!");
             }
 
             if (model.Email == null)
             {
-                return BadRequest(new { invalid = "Вкажіть пошту." });
+                return BadRequest("Вкажіть пошту!");
             }
             else
             {
                 var testmail = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
                 if (!testmail.IsMatch(model.Email))
                 {
-                    return BadRequest(new { invalid = "Невірно вказана почта." });
+                    return BadRequest("Невірно вказана почта!");
                 }
             }
             DbUser user = new DbUser
@@ -97,20 +95,27 @@ namespace LibIT.WebApi.Controllers
                 //Phone = model.Phone,
                 //Description = model.Description,
             };
+
             var res = _userManager.CreateAsync(user, model.Password).Result;
             if (!res.Succeeded)
             {
-                return BadRequest(new { invalid = " Код доступу має складатись з 8 символів, містити мінімум одну велику літеру! " });
+                return BadRequest("Код доступу має складатись з 8 символів, містити мінімум одну велику літеру!");
             }
+
             res = _userManager.AddToRoleAsync(user, roleName).Result;
 
-            if (res.Succeeded)
+            if (!res.Succeeded)
             {
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                var token = _IJwtTokenService.CreateToken(user);
-                return Ok(token);
+                return BadRequest("Поганий запит!");
             }
-            return BadRequest();
+
+            await _signInManager.SignInAsync(user, isPersistent: false);
+
+            return Ok(
+                 new
+                 {
+                     token = _IJwtTokenService.CreateToken(user)
+                 });
         }
     }
 }
