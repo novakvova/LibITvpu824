@@ -12,11 +12,9 @@ namespace LibIT.WebApi.Entities
        DbUserRole, IdentityUserLogin<long>,
        IdentityRoleClaim<long>, IdentityUserToken<long>>
     {
-        public EFContext(DbContextOptions<EFContext> options)
-            : base(options)
-        {
+        public virtual DbSet<UserProfile> UserProfile { get; set; }
 
-        }
+        public EFContext(DbContextOptions<EFContext> options) : base(options) { }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
