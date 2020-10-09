@@ -1,19 +1,19 @@
 package com.example.libit;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.toolbox.NetworkImageView;
+import com.example.libit.data.UserRepository;
 import com.example.libit.models.RegisterView;
 import com.example.libit.network.ImageRequester;
 import com.example.libit.network.NetworkService;
+import com.example.libit.network.SessionManager;
 import com.example.libit.network.Tokens;
 import com.example.libit.network.utils.CommonUtils;
 import com.google.android.material.textfield.TextInputEditText;
@@ -25,8 +25,6 @@ import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static com.example.libit.network.Tokens.saveJWTToken;
 
 public class RegisterActivity extends AppCompatActivity {
     private ImageRequester imageRequester;
@@ -84,7 +82,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         CommonUtils.showLoading(this);
 
-        RegisterView model = new RegisterView();
+        final RegisterView model = new RegisterView();
         model.setEmail(email.getText().toString());
         model.setPassword(password.getText().toString());
 
@@ -98,9 +96,16 @@ public class RegisterActivity extends AppCompatActivity {
                         if (response.errorBody() == null && response.isSuccessful()) {
                             Tokens token = response.body();
                             assert token != null;
-                            SharedPreferences prefs = RegisterActivity.this.getSharedPreferences("jwtStore", Context.MODE_PRIVATE);
-                            saveJWTToken(token.getToken(), prefs);
-                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+
+                            SessionManager sessionManager = SessionManager.getInstance(RegisterActivity.this);
+
+                            sessionManager.saveJWTToken(token.getToken());
+                            sessionManager.saveUserLogin(model.getEmail());
+
+                            UserRepository userRepo = UserRepository.getInstance();
+                            userRepo.setUserProfile(sessionManager.fetchAuthTokenWithBearer());
+
+                            Intent intent = new Intent(RegisterActivity.this, ProfileActivity.class);
                             startActivity(intent);
                         } else {
                             String errorMessage;

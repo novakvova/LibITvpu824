@@ -1,19 +1,19 @@
 package com.example.libit;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.toolbox.NetworkImageView;
+import com.example.libit.data.UserRepository;
 import com.example.libit.models.LoginView;
 import com.example.libit.network.ImageRequester;
 import com.example.libit.network.NetworkService;
+import com.example.libit.network.SessionManager;
 import com.example.libit.network.Tokens;
 import com.example.libit.network.utils.CommonUtils;
 import com.google.android.material.textfield.TextInputEditText;
@@ -23,8 +23,6 @@ import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static com.example.libit.network.Tokens.saveJWTToken;
 
 public class LoginActivity extends AppCompatActivity {
     private ImageRequester imageRequester;
@@ -46,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         final TextInputEditText email = findViewById(R.id.input_email);
 
         CommonUtils.showLoading(this);
-        LoginView model = new LoginView();
+        final LoginView model = new LoginView();
         model.setEmail(Objects.requireNonNull(email.getText()).toString());
         model.setPassword(Objects.requireNonNull(password.getText()).toString());
         NetworkService.getInstance()
@@ -59,10 +57,16 @@ public class LoginActivity extends AppCompatActivity {
                         if (response.errorBody() == null && response.isSuccessful()) {
                             Tokens token = response.body();
                             assert token != null;
-                            SharedPreferences prefs = LoginActivity.this.getSharedPreferences("jwtStore", Context.MODE_PRIVATE);
-                            saveJWTToken(token.getToken(), prefs);
-//                            saveJWTToken(post.getToken(),post.getRefreshToken());
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+
+                            SessionManager sessionManager = SessionManager.getInstance(LoginActivity.this);
+
+                            sessionManager.saveJWTToken(token.getToken());
+                            sessionManager.saveUserLogin(model.getEmail());
+
+                            UserRepository userRepo = UserRepository.getInstance();
+                            userRepo.setUserProfile(sessionManager.fetchAuthTokenWithBearer());
+
+                            Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
                             startActivity(intent);
                         } else {
                             String error = "Login invalid!!!";
@@ -84,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    public void onClickSignUp(View view){
+    public void onClickSignUp(View view) {
         Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
         startActivity(intent);
     }

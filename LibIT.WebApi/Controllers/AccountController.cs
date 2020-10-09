@@ -53,7 +53,6 @@ namespace LibIT.WebApi.Controllers
             }
 
             await _signInManager.SignInAsync(user, isPersistent: false);
-
             return Ok(
                  new
                  {
@@ -110,6 +109,7 @@ namespace LibIT.WebApi.Controllers
             }
 
             await _signInManager.SignInAsync(user, isPersistent: false);
+            
 
             return Ok(
                  new
