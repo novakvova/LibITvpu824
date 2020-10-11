@@ -61,7 +61,8 @@ namespace LibIT.WebApi.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody]UserViewModel model)
+        [RequestSizeLimit(100 * 1024 * 1024)]     // set the maximum file size limit to 100 MB
+        public async Task<IActionResult> Register([FromBody]UserRegisterViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -89,10 +90,7 @@ namespace LibIT.WebApi.Controllers
             DbUser user = new DbUser
             {
                 Email = model.Email,
-                UserName = model.Email,
-                //Age = model.Age,
-                //Phone = model.Phone,
-                //Description = model.Description,
+                UserName = model.Email
             };
 
             var res = _userManager.CreateAsync(user, model.Password).Result;
