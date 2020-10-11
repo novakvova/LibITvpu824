@@ -36,26 +36,7 @@ public class UserRepository {
         userProfile = null;
     }
 
-    public void setUserProfile(String token) {
-        NetworkService.getInstance()
-                .getJSONApi()
-                .profile(token)
-                .enqueue(new Callback<UserView>() {
-                    @Override
-                    public void onResponse(@NonNull Call<UserView> call, @NonNull Response<UserView> response) {
-                        if (response.errorBody() == null && response.isSuccessful()) {
-                            assert response.body() != null;
-                            userProfile = response.body();
-                        } else {
-                            userProfile = null;
-                        }
-                    }
+    public void setUserProfile() {
 
-                    @Override
-                    public void onFailure(@NonNull Call<UserView> call, @NonNull Throwable t) {
-                        userProfile = null;
-                        t.printStackTrace();
-                    }
-                });
     }
 }

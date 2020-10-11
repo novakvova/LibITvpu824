@@ -63,9 +63,6 @@ public class LoginActivity extends AppCompatActivity {
                             sessionManager.saveJWTToken(token.getToken());
                             sessionManager.saveUserLogin(model.getEmail());
 
-                            UserRepository userRepo = UserRepository.getInstance();
-                            userRepo.setUserProfile(sessionManager.fetchAuthTokenWithBearer());
-
                             Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
                             startActivity(intent);
                         } else {
