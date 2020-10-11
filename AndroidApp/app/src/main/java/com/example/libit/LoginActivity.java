@@ -81,7 +81,8 @@ public class LoginActivity extends AppCompatActivity {
                             //toast.show();
                             //saveJWTToken(post.getToken(),post.getRefreshToken());
                             //CommonUtils.hideLoading();
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
+                            intent.putExtra("token",token.getToken() );
                             startActivity(intent);
                         } else {
                             String error = "error";

@@ -55,6 +55,7 @@ namespace LibIT.WebApi.Controllers
             }
 
             await _signInManager.SignInAsync(user, isPersistent: false);
+           
 
             return Ok(
                  new
@@ -89,6 +90,8 @@ namespace LibIT.WebApi.Controllers
                     return BadRequest(new { invalid = "Невірно вказана почта." });
                 }
             }
+
+
             DbUser user = new DbUser
             {
                 Email = model.Email,
@@ -107,8 +110,14 @@ namespace LibIT.WebApi.Controllers
             if (res.Succeeded)
             {
                 await _signInManager.SignInAsync(user, isPersistent: false);
-                var token = _IJwtTokenService.CreateToken(user);
-                return Ok(token);
+                //var token = _IJwtTokenService.CreateToken(user);
+
+                //return Ok(token);
+                return Ok(
+                new
+                {
+                    token = _IJwtTokenService.CreateToken(user)
+                });
             }
             return BadRequest();
         }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -63,6 +63,17 @@ namespace LibIT.WebApi
                     ClockSkew = TimeSpan.Zero
                 };
             });
+
+
+            services.AddAuthorization(auth =>
+            {
+                auth.AddPolicy("Bearer", policy => policy
+                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme‌​)
+                    .RequireAuthenticatedUser().Build());
+
+            });
+
+
 
             services.AddControllers();
         }
