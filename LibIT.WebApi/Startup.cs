@@ -90,7 +90,7 @@ namespace LibIT.WebApi
             #endregion
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             SeederDB.SeedDataByAS(app.ApplicationServices);
