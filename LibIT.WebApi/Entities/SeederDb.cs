@@ -1,16 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace LibIT.WebApi.Entities
 {
     public class SeederDB
     {
-        public static void SeedData(UserManager<DbUser> userManager,
-                   RoleManager<DbRole> roleManager)
+        public static void SeedData(UserManager<DbUser> userManager, RoleManager<DbRole> roleManager)
         {
             var adminRoleName = "Admin";
             var userRoleName = "User";
@@ -24,6 +20,7 @@ namespace LibIT.WebApi.Entities
 
                 }).Result;
             }
+
             roleResult = roleManager.FindByNameAsync(userRoleName).Result;
             if (roleResult == null)
             {
@@ -34,9 +31,7 @@ namespace LibIT.WebApi.Entities
                 }).Result;
             }
 
-
             var email = "admin@gmail.com";
-
             var findUser = userManager.FindByEmailAsync(email).Result;
             if (findUser == null)
             {
@@ -44,13 +39,19 @@ namespace LibIT.WebApi.Entities
                 {
                     Email = email,
                     UserName = email,
-                    //Image = "https://cdn.pixabay.com/photo/2017/07/28/23/34/fantasy-picture-2550222_960_720.jpg",
-                    //Age = 30,
-                    //Phone = "+380957476156",
-                    //Description = "PHP programmer"
                 };
-                var result = userManager.CreateAsync(user, "Qwerty1-").Result;
 
+                user.UserProfile = new UserProfile()
+                {
+                    Name = "Petro",
+                    Surname = "Petunchik",
+                    DateOfBirth = new DateTime(1980, 5, 20),
+                    Phone = "+380978515659",
+                    RegistrationDate = DateTime.Now,
+                    Photo = "person_1.jpg"
+                };
+
+                var result = userManager.CreateAsync(user, "Qwerty1-").Result;
                 result = userManager.AddToRoleAsync(user, adminRoleName).Result;
             }
 
@@ -62,13 +63,19 @@ namespace LibIT.WebApi.Entities
                 {
                     Email = email,
                     UserName = email,
-                    //Image = "https://cdn.pixabay.com/photo/2017/07/28/23/34/fantasy-picture-2550222_960_720.jpg",
-                    //Age = 30,
-                    //Phone = "+380988005535",
-                    //Description = "User"
                 };
-                var result = userManager.CreateAsync(user, "Qwerty1-").Result;
 
+                user.UserProfile = new UserProfile()
+                {
+                    Name = "Natalya",
+                    Surname = "Pupenko",
+                    DateOfBirth = new DateTime(1982, 10, 7),
+                    Phone = "+380670015009",
+                    RegistrationDate = DateTime.Now,
+                    Photo = "person_2.jpg"
+                };
+
+                var result = userManager.CreateAsync(user, "Qwerty1-").Result;
                 result = userManager.AddToRoleAsync(user, userRoleName).Result;
             }
         }

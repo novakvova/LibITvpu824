@@ -5,8 +5,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NetworkService {
     private static NetworkService mInstance;
-    //private static final String BASE_URL = "http://10.0.2.2:53558";
-    private static final String BASE_URL = "https://karpaty.tk";
+    private static final String BASE_URL = "http://10.0.2.2:53558";
+//    private static final String BASE_URL = "https://karpaty.tk";
     private Retrofit mRetrofit;
 
     private NetworkService() {
@@ -22,7 +22,12 @@ public class NetworkService {
         }
         return mInstance;
     }
+
     public JSONPlaceHolderApi getJSONApi() {
         return mRetrofit.create(JSONPlaceHolderApi.class);
+    }
+
+    public static String getBaseUrl() {
+        return BASE_URL;
     }
 }
