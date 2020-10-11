@@ -1,7 +1,12 @@
 package com.example.libit;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -16,9 +21,12 @@ import com.example.libit.network.NetworkService;
 import com.example.libit.network.SessionManager;
 import com.example.libit.network.Tokens;
 import com.example.libit.network.utils.CommonUtils;
+import com.example.libit.network.utils.FileUtils;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -27,8 +35,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity {
+    //Людина обрала файл
+    public static final int PICKFILE_RESULT_CODE = 1;
     private ImageRequester imageRequester;
     private NetworkImageView editImage;
+    private String chooseImageBase64;
     private final String BASE_URL = NetworkService.getBaseUrl();
 
     @Override
@@ -85,6 +96,7 @@ public class RegisterActivity extends AppCompatActivity {
         final RegisterView model = new RegisterView();
         model.setEmail(email.getText().toString());
         model.setPassword(password.getText().toString());
+        model.setImageBase64(chooseImageBase64);
 
         NetworkService.getInstance()
                 .getJSONApi()
@@ -129,4 +141,37 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case PICKFILE_RESULT_CODE: {
+                if (resultCode == -1) {
+                    Uri fileUri = data.getData();
+                    try {
+                        File imgFile = FileUtils.from(getApplicationContext(), fileUri);
+                        byte[] buffer = new byte[(int) imgFile.length() + 100];
+                        int length = new FileInputStream(imgFile).read(buffer);
+                        chooseImageBase64 = Base64.encodeToString(buffer, 0, length, Base64.NO_WRAP);
+                        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                        editImage.setImageBitmap(myBitmap);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+            }
+
+        }
+    }
+
+    public void onClickSelectImage(View view) {
+        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+        chooseFile.setType("image/*");
+        chooseFile = Intent.createChooser(chooseFile, "Оберіть фото");
+        startActivityForResult(chooseFile, PICKFILE_RESULT_CODE);
+    }
+
+
 }

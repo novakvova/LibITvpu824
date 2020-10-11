@@ -78,6 +78,17 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
+            android:id="@+id/buttonSelectImage"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="15dp"
+            android:onClick="onClickSelectImage"
+            android:text="@string/selectImage" />
+
+
+        <Button
             android:id="@+id/buttonRegister"
             android:layout_width="300dp"
             android:layout_height="wrap_content"

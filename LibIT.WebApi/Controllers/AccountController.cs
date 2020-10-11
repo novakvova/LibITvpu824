@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using LibIT.WebApi.Entities;
+using LibIT.WebApi.Helpers;
 using LibIT.WebApi.Models;
 using LibIT.WebApi.Services;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,16 +23,19 @@ namespace LibIT.WebApi.Controllers
         private readonly UserManager<DbUser> _userManager;
         private readonly SignInManager<DbUser> _signInManager;
         private readonly IJwtTokenService _IJwtTokenService;
+        private readonly IWebHostEnvironment _env;
 
         public AccountController(EFContext context,
            UserManager<DbUser> userManager,
            SignInManager<DbUser> signInManager,
-           IJwtTokenService IJwtTokenService)
+           IJwtTokenService IJwtTokenService,
+           IWebHostEnvironment env)
         {
             _userManager = userManager;
             _context = context;
             _signInManager = signInManager;
             _IJwtTokenService = IJwtTokenService;
+            _env = env;
         }
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody]UserLoginViewModel model)
@@ -61,12 +68,15 @@ namespace LibIT.WebApi.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody]UserViewModel model)
+        [RequestSizeLimit(100 * 1024 * 1024)]     // set the maximum file size limit to 100 MB
+        public async Task<IActionResult> Register([FromBody]UserRegisterViewModel model)
         {
+            
             if (!ModelState.IsValid)
             {
                 return BadRequest("Поганий запит");
             }
+            
             var roleName = "User";
             var userReg = _context.Users.FirstOrDefault(x => x.Email == model.Email);
             if (userReg != null)
@@ -89,10 +99,19 @@ namespace LibIT.WebApi.Controllers
             DbUser user = new DbUser
             {
                 Email = model.Email,
-                UserName = model.Email,
-                //Age = model.Age,
-                //Phone = model.Phone,
-                //Description = model.Description,
+                UserName = model.Email
+            };
+            string ext = ".jpg";
+            string fileName = Path.GetRandomFileName() + ext;
+
+            user.UserProfile = new UserProfile()
+            {
+                Name = "Empty",
+                Surname = "Empty",
+                DateOfBirth = new DateTime(2000, 1, 1),
+                Phone = "+000000000000",
+                RegistrationDate = DateTime.Now,
+                Photo = fileName
             };
 
             var res = _userManager.CreateAsync(user, model.Password).Result;
@@ -107,6 +126,21 @@ namespace LibIT.WebApi.Controllers
             {
                 return BadRequest("Поганий запит!");
             }
+
+            var bmp = model.ImageBase64.FromBase64StringToImage();
+            var serverPath = _env.ContentRootPath; //Directory.GetCurrentDirectory(); //_env.WebRootPath;
+            var folerName = "Uploaded";
+            var path = Path.Combine(serverPath, folerName); //
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            
+
+            string filePathSave = Path.Combine(path, fileName);
+
+            bmp.Save(filePathSave, ImageFormat.Jpeg);
+
 
             await _signInManager.SignInAsync(user, isPersistent: false);
             
