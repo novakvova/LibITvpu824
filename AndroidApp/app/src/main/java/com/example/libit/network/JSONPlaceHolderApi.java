@@ -17,5 +17,5 @@ public interface JSONPlaceHolderApi {
     Call<Tokens> register(@Body RegisterView model);
 
     @POST("/api/profile/info")
-    Call<UserView> profile(@Header("Authorization") String token);
+    Call<UserView> profile();
 }

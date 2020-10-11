@@ -98,12 +98,8 @@ public class RegisterActivity extends AppCompatActivity {
                             assert token != null;
 
                             SessionManager sessionManager = SessionManager.getInstance(RegisterActivity.this);
-
                             sessionManager.saveJWTToken(token.getToken());
                             sessionManager.saveUserLogin(model.getEmail());
-
-                            UserRepository userRepo = UserRepository.getInstance();
-                            userRepo.setUserProfile(sessionManager.fetchAuthTokenWithBearer());
 
                             Intent intent = new Intent(RegisterActivity.this, ProfileActivity.class);
                             startActivity(intent);
