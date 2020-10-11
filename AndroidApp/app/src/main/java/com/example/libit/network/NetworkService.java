@@ -1,28 +1,28 @@
 package com.example.libit.network;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.example.libit.constants.Urls;
+import com.example.libit.network.interceptors.JWTInterceptor;
 
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NetworkService {
     private static NetworkService mInstance;
-   private static final String BASE_URL = "http://10.0.2.2:53558";
-  //  private static final String BASE_URL = "https://karpaty.tk";
-
     private Retrofit mRetrofit;
 
-
     private NetworkService() {
-
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
+        OkHttpClient.Builder client = new OkHttpClient.Builder()
+                .readTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .addInterceptor(new JWTInterceptor());
 
         mRetrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .baseUrl(Urls.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client.build())
                 .build();
     }
 
@@ -32,7 +32,12 @@ public class NetworkService {
         }
         return mInstance;
     }
+
     public JSONPlaceHolderApi getJSONApi() {
         return mRetrofit.create(JSONPlaceHolderApi.class);
+    }
+
+    public static String getBaseUrl() {
+        return Urls.BASE_URL;
     }
 }

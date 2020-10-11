@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
+using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using LibIT.WebApi.Entities;
 using LibIT.WebApi.Helpers;
 using LibIT.WebApi.Services;
@@ -11,14 +11,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 namespace LibIT.WebApi
 {
@@ -35,6 +34,47 @@ namespace LibIT.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "YPS API",
+                    Description = "A project  ASP.NET Core Web API",
+                    TermsOfService = new Uri("https://example.com/terms"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Team YPS",
+                        Email = string.Empty,
+                    },
+
+                });
+
+                c.AddSecurityDefinition("Bearer",
+                     new OpenApiSecurityScheme
+                     {
+                         Description = "JWT Authorization header using the Bearer scheme.",
+                         Type = SecuritySchemeType.Http,
+                         Scheme = "bearer"
+                     });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement{
+                    {
+                        new OpenApiSecurityScheme{
+                            Reference = new OpenApiReference{
+                                Id = "Bearer",
+                                Type = ReferenceType.SecurityScheme
+                            }
+                        },new List<string>()
+                    }
+                });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                if (File.Exists(xmlPath))
+                {
+                    c.IncludeXmlComments(xmlPath);
+                }
+
+            });
             // Add framework services.
             services.AddDbContext<EFContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
@@ -43,8 +83,11 @@ namespace LibIT.WebApi
                 .AddEntityFrameworkStores<EFContext>()
                 .AddDefaultTokenProviders();
 
-            var signinKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Kesha-kapitan-krasavchik"));
-            services.AddScoped<IJwtTokenService, JwtTokenService>();
+            services.AddTransient<IJwtTokenService, JwtTokenService>();
+
+            //var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Kesha-kapitan-krasavchik"));
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetValue<string>("SecretPhrase")));
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -55,7 +98,7 @@ namespace LibIT.WebApi
                 cfg.SaveToken = true;
                 cfg.TokenValidationParameters = new TokenValidationParameters()
                 {
-                    IssuerSigningKey = signinKey,
+                    IssuerSigningKey = signingKey,
                     ValidateAudience = false,
                     ValidateIssuer = false,
                     ValidateLifetime = true,
@@ -63,17 +106,6 @@ namespace LibIT.WebApi
                     ClockSkew = TimeSpan.Zero
                 };
             });
-
-
-            services.AddAuthorization(auth =>
-            {
-                auth.AddPolicy("Bearer", policy => policy
-                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme‌​)
-                    .RequireAuthenticatedUser().Build());
-
-            });
-
-
 
             services.AddControllers();
         }
@@ -103,6 +135,11 @@ namespace LibIT.WebApi
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
 
             SeederDB.SeedDataByAS(app.ApplicationServices);
 

@@ -1,65 +1,69 @@
 package com.example.libit;
 
+import android.os.Bundle;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.example.libit.models.ProfileView;
-import com.example.libit.models.RegisterView;
+import com.android.volley.toolbox.NetworkImageView;
+import com.example.libit.data.UserRepository;
+import com.example.libit.models.UserView;
+import com.example.libit.network.ImageRequester;
 import com.example.libit.network.NetworkService;
-import com.example.libit.network.Tokens;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ProfileActivity extends AppCompatActivity {
-    TextView txtToken;
+    private ImageRequester imageRequester;
+    private NetworkImageView editImage;
+    private final String BASE_URL = NetworkService.getBaseUrl();
+    private UserView userProfile;
+    TextView tvProfileName;
+    TextView tvProfileSurname;
+    TextView tvProfileBirthDate;
+    TextView tvProfilePhone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        imageRequester = ImageRequester.getInstance();
 
-        Bundle arguments = getIntent().getExtras();
-        String userToken = arguments.get("token").toString();
-        txtToken = findViewById(R.id.textView);
-        txtToken.append(userToken);
-    }
+        editImage = findViewById(R.id.chooseImageProfile);
+        tvProfileName = findViewById(R.id.textProfileName);
+        tvProfileSurname = findViewById(R.id.textProfileSurname);
+        tvProfileBirthDate = findViewById(R.id.textProfileDateOfBirth);
+        tvProfilePhone = findViewById(R.id.textProfilePhone);
 
-    public void OnClickInfo(View view) {
-        final EditText email = findViewById(R.id.editTextTextEmailAddress);
-        String userToken = txtToken.getText().toString();
-
-        ProfileView profile = new ProfileView();
-        profile.setEmail(email.getText().toString());
-                NetworkService.getInstance()
+        NetworkService.getInstance()
                 .getJSONApi()
-                       .showInfo("Bearer "+ userToken)
-               // .showInfo(userToken)
-                .enqueue(new Callback<ProfileView>() {
+                .profile()
+                .enqueue(new Callback<UserView>() {
                     @Override
-                    public void onResponse(@NonNull Call<ProfileView> call, @NonNull Response<ProfileView> response) {
-                        //   CommonUtils.hideLoading();
-                        ProfileView user = response.body();
-                        email.append("Email: " + user.getEmail() + "\n");
+                    public void onResponse(@NonNull Call<UserView> call, @NonNull Response<UserView> response) {
+                        if (response.errorBody() == null && response.isSuccessful()) {
+                            assert response.body() != null;
+                            userProfile = response.body();
 
+                            imageRequester.setImageFromUrl(editImage, BASE_URL + "/images/" + userProfile.getPhoto());
+                            tvProfileName.setText(userProfile.getName());
+                            tvProfileSurname.setText(userProfile.getSurname());
+                            tvProfileBirthDate.setText(userProfile.getDateOfBirth());
+                            tvProfilePhone.setText(userProfile.getPhone());
+
+                        } else {
+                            userProfile = null;
+                        }
                     }
 
                     @Override
-                    public void onFailure(@NonNull Call<ProfileView> call, @NonNull Throwable t) {
-
-                        //CommonUtils.hideLoading();
-                        //textView.append("Error occurred while getting request!");
+                    public void onFailure(@NonNull Call<UserView> call, @NonNull Throwable t) {
+                        userProfile = null;
                         t.printStackTrace();
                     }
                 });
-
     }
 }

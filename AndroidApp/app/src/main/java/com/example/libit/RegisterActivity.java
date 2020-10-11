@@ -1,97 +1,132 @@
 package com.example.libit;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.Toast;
-
-import com.example.libit.models.LoginView;
+import com.android.volley.toolbox.NetworkImageView;
+import com.example.libit.data.UserRepository;
 import com.example.libit.models.RegisterView;
+import com.example.libit.network.ImageRequester;
 import com.example.libit.network.NetworkService;
+import com.example.libit.network.SessionManager;
 import com.example.libit.network.Tokens;
 import com.example.libit.network.utils.CommonUtils;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
+import java.io.IOException;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity {
+    private ImageRequester imageRequester;
+    private NetworkImageView editImage;
+    private final String BASE_URL = NetworkService.getBaseUrl();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        imageRequester = ImageRequester.getInstance();
+        editImage = findViewById(R.id.chooseImageRegister);
+        imageRequester.setImageFromUrl(editImage, BASE_URL + "/images/testAvatarHen.jpg");
     }
 
-    public void saveJWTToken(String token) {
-        SharedPreferences prefs;
-        SharedPreferences.Editor edit;
-        prefs = this.getSharedPreferences("jwtStore", Context.MODE_PRIVATE);
-        edit = prefs.edit();
-        try {
-            edit.putString("token", token);
-            Log.i("Login", token);
-            edit.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void onClickRegister(View view) {
+        final TextInputEditText email = findViewById(R.id.input_emailRegister);
+        final TextInputLayout emailLayout = findViewById(R.id.emailLayoutRegister);
+
+        final TextInputEditText password = findViewById(R.id.input_passwordRegister);
+        final TextInputLayout passwordLayout = findViewById(R.id.passwordLayoutRegister);
+
+        final TextInputEditText passwordConfirm = findViewById(R.id.input_passwordConfirmRegister);
+        final TextInputLayout passwordConfirmLayout = findViewById(R.id.passwordConfirmLayoutRegister);
+
+        boolean isCorrect = true;
+
+        if (Objects.requireNonNull(email.getText()).toString().equals("")) {
+            emailLayout.setError("Required field!");
+            isCorrect = false;
+        } else {
+            emailLayout.setError(null);
         }
-    }
 
-    public void OnClickRegister(View view) {
-        final EditText password = findViewById(R.id.editTextTextPassword);
-        final EditText email = findViewById(R.id.editTextTextEmailAddress);
+        if (Objects.requireNonNull(password.getText()).toString().equals("")) {
+            passwordLayout.setError("Required field!");
+            isCorrect = false;
+        } else {
+            passwordLayout.setError(null);
+        }
 
-      //  CommonUtils.showLoading(this);
-        RegisterView m = new RegisterView();
-        m.setEmail(email.getText().toString());
-        m.setPassword(password.getText().toString());
+        if (Objects.requireNonNull(passwordConfirm.getText()).toString().equals("")) {
+            passwordConfirmLayout.setError("Required field!");
+            isCorrect = false;
+        } else if (!password.getText().toString().equals(passwordConfirm.getText().toString())) {
+            passwordConfirmLayout.setError("Confirm your password!");
+            isCorrect = false;
+        } else {
+            passwordConfirmLayout.setError(null);
+        }
+
+        if (!isCorrect)
+            return;
+
+        CommonUtils.showLoading(this);
+
+        final RegisterView model = new RegisterView();
+        model.setEmail(email.getText().toString());
+        model.setPassword(password.getText().toString());
+
         NetworkService.getInstance()
                 .getJSONApi()
-                .register(m)
+                .register(model)
                 .enqueue(new Callback<Tokens>() {
                     @Override
                     public void onResponse(@NonNull Call<Tokens> call, @NonNull Response<Tokens> response) {
-                     //   CommonUtils.hideLoading();
-                        Tokens token2 = response.body();
-                       if (response.errorBody() == null && response.isSuccessful()) {
-                            //passwordLayout.setError("");
-                            //loginButton.setError("");
+                        CommonUtils.hideLoading();
+                        if (response.errorBody() == null && response.isSuccessful()) {
                             Tokens token = response.body();
-                            saveJWTToken(token.getToken());
-                          //   Toast toast = Toast.makeText(getApplicationContext(), "All done! your ref token :" + token.getToken(), Toast.LENGTH_LONG);
-                         //   toast.show();
-                           // saveJWTToken(post.getToken(),post.getRefreshToken());
-                          //  CommonUtils.hideLoading();
-                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                            assert token != null;
+
+                            SessionManager sessionManager = SessionManager.getInstance(RegisterActivity.this);
+                            sessionManager.saveJWTToken(token.getToken());
+                            sessionManager.saveUserLogin(model.getEmail());
+
+                            Intent intent = new Intent(RegisterActivity.this, ProfileActivity.class);
                             startActivity(intent);
                         } else {
-                            //CommonUtils.hideLoading();
-                            String error = "error";
+                            String errorMessage;
+                            try {
+                                assert response.errorBody() != null;
+                                errorMessage = response.errorBody().string();
+                            } catch (IOException e) {
+                                errorMessage = response.message();
+                                e.printStackTrace();
+                            }
                             Toast toast = Toast.makeText(getApplicationContext(),
-                                    "Login invalid!!! ",  Toast.LENGTH_LONG);
+                                    errorMessage, Toast.LENGTH_LONG);
                             toast.show();
-
                         }
-
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<Tokens> call, @NonNull Throwable t) {
-
-                        //CommonUtils.hideLoading();
-                        //textView.append("Error occurred while getting request!");
+                        CommonUtils.hideLoading();
+                        String error = "Error occurred while getting request!";
+                        Toast toast = Toast.makeText(getApplicationContext(),
+                                error, Toast.LENGTH_LONG);
+                        toast.show();
                         t.printStackTrace();
                     }
                 });
-
-
     }
 }

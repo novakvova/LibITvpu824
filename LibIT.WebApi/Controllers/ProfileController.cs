@@ -3,48 +3,54 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LibIT.WebApi.Entities;
+using LibIT.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibIT.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-  
     public class ProfileController : ControllerBase
     {
-        private readonly UserManager<DbUser> _userManager;
-
-        public ProfileController(UserManager<DbUser> userManager)
+        private readonly EFContext _context;
+        public ProfileController(EFContext context)
         {
-            _userManager = userManager;
+            _context = context;
         }
 
-
-
-
-        // [HttpPost("info")]
-        [HttpGet("info")]
-       // [Authorize("Bearer")]
-        public async Task<IActionResult> Info()
+        [HttpPost("info")]
+        public IActionResult GetInfo()
         {
+            string userName;
+            try
+            {
+                userName = User.Claims.FirstOrDefault(x => x.Type == "name").Value;
+            }
+            catch (Exception)
+            {
+                return BadRequest("Потрібно спочатку залогінитися!");
+            }
 
-            var userName = User.Claims.FirstOrDefault(x => x.Type == "name").Value;
-            var user = await _userManager.FindByNameAsync(userName);
-            string test = "Home page for " + user.Email;
-            return Ok(user);
+            if (string.IsNullOrEmpty(userName))
+            {
+                return BadRequest("Потрібно спочатку залогінитися!");
 
+            }
 
-            //var userName = User.Identity.Name;
-            //if (User.Identity.IsAuthenticated)
-            //{
-            //    string test = "Home page for " + User.Identity.Name;
-            //}
-            //return Ok();
+            var query = _context.Users.Include(x => x.UserProfile).AsQueryable();
+            var user = query.FirstOrDefault(c => c.UserName == userName);
 
+            if (user == null)
+            {
+                return BadRequest("Поганий запит!");
+            }
+
+            UserProfileView userProfile = new UserProfileView(user.UserProfile); 
+            return Ok(userProfile);
         }
     }
 }
