@@ -11,6 +11,10 @@ public class RegisterView {
     @Expose
     private String password;
 
+    @SerializedName("imageBase64")
+    @Expose
+    private String imageBase64;
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -21,5 +25,9 @@ public class RegisterView {
 
     public String getEmail() {
         return email;
+    }
+
+    public void setImageBase64(String imageBase64) {
+        this.imageBase64 = imageBase64;
     }
 }
