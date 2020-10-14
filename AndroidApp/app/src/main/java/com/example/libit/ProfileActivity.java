@@ -31,7 +31,7 @@ public class ProfileActivity extends AppCompatActivity {
     TextView tvProfileBirthDate;
     TextView tvProfilePhone;
 
-    private Button btnSelectImage;
+    private Button btnEditProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +45,7 @@ public class ProfileActivity extends AppCompatActivity {
         tvProfileBirthDate = findViewById(R.id.textProfileDateOfBirth);
         tvProfilePhone = findViewById(R.id.textProfilePhone);
 
-        btnSelectImage = findViewById(R.id.btnSelectImage);
+        btnEditProfile = findViewById(R.id.btnEditProfile);
 
         NetworkService.getInstance()
                 .getJSONApi()
@@ -76,11 +76,9 @@ public class ProfileActivity extends AppCompatActivity {
                 });
     }
 
-    public void btnSelectImageCkick(View view) {
-        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-        chooseFile.setType("image/*");
-        chooseFile = Intent.createChooser(chooseFile, "Оберіть фото");
-        startActivityForResult(chooseFile, PICKFILE_RESULT_CODE);
+    public void onClickEditProfile(View view) {
+        Intent intent = new Intent(this, EditProfileActivity.class);
+        startActivity(intent);
 
     }
 }

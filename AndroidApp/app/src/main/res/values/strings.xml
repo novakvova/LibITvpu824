@@ -8,4 +8,6 @@
     <string name="signUp">Sign Up</string>
     <string name="empty">Empty</string>
     <string name="selectImage">Оберіть фото</string>
+    <string name="editProfile">Edit Profile</string>
+    <string name="saveChanges">Save Changes</string>
 </resources>
