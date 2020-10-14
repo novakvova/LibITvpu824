@@ -13,10 +13,17 @@ namespace LibIT.WebApi.Models
         public string Photo { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public string Phone { get; set; }
+
+        public string Email { get; set; }
+
         public DateTime RegistrationDate { get; set; }
 
-        public UserProfileView(UserProfile profile)
+        public UserProfileView() {}
+
+        public UserProfileView(DbUser user)
         {
+            UserProfile profile = user.UserProfile;
+            Email = user.Email;
             Name = profile.Name;
             Surname = profile.Surname;
             Photo = profile.Photo;

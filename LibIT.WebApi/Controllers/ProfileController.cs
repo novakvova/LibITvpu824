@@ -49,8 +49,53 @@ namespace LibIT.WebApi.Controllers
                 return BadRequest("Поганий запит!");
             }
 
-            UserProfileView userProfile = new UserProfileView(user.UserProfile); 
+            UserProfileView userProfile = new UserProfileView(user); 
             return Ok(userProfile);
+        }
+
+        [HttpPost("update")]
+        public IActionResult ProfileUpdate([FromBody] UserProfileView model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Bad Model");
+            }
+
+            string userName;
+            try
+            {
+                userName = User.Claims.FirstOrDefault(x => x.Type == "name").Value;
+            }
+            catch (Exception)
+            {
+                return BadRequest("Потрібно спочатку залогінитися!");
+            }
+
+            if (string.IsNullOrEmpty(userName))
+            {
+                return BadRequest("Потрібно спочатку залогінитися!");
+
+            }
+
+            var query = _context.Users.Include(x => x.UserProfile).AsQueryable();
+            var user = query.FirstOrDefault(c => c.UserName == userName);
+
+            if (user == null)
+            {
+                return BadRequest("Поганий запит!");
+            }
+
+            user.UserProfile.Name = model.Name;
+            user.UserProfile.Surname = model.Surname;
+            user.UserProfile.DateOfBirth = model.DateOfBirth;
+            user.UserProfile.Phone = model.Phone;
+            user.PhoneNumber = model.Phone;
+            user.UserName = model.Email;
+            user.Email = model.Email;
+            _context.SaveChanges();
+
+            var result = new UserProfileView(user);
+            return Ok(result);
         }
     }
 }
