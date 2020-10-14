@@ -7,4 +7,6 @@
     <string name="signIn">Sign In</string>
     <string name="signUp">Sign Up</string>
     <string name="empty">Empty</string>
+    <string name="changePhoto">Change Photo</string>
+
 </resources>
