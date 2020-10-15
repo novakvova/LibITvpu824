@@ -13,13 +13,27 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.android.volley.toolbox.NetworkImageView
-            android:id="@+id/chooseImageProfile"
-            android:layout_width="200dp"
-            android:layout_height="150dp"
-            android:layout_gravity="center_horizontal"
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp" />
+            android:layout_gravity="center_horizontal">
+
+            <com.android.volley.toolbox.NetworkImageView
+                android:id="@+id/chooseImageProfile"
+                android:layout_width="200dp"
+                android:layout_height="150dp" />
+
+            <ImageView
+                android:id="@+id/chooseImageBrush"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/chooseImageProfile"
+                android:src="@drawable/ic_brush"
+                android:layout_alignBottom="@id/chooseImageProfile"
+                android:layout_marginStart="0dp"
+                android:contentDescription="@string/change_photo" />
+        </RelativeLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/nameLayout"

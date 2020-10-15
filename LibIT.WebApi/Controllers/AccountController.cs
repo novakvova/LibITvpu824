@@ -130,7 +130,7 @@ namespace LibIT.WebApi.Controllers
             var bmp = model.ImageBase64.FromBase64StringToImage();
             var serverPath = _env.ContentRootPath; //Directory.GetCurrentDirectory(); //_env.WebRootPath;
             var folerName = "Uploaded";
-            var path = Path.Combine(serverPath, folerName); //
+            var path = Path.Combine(serverPath, folerName);
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);

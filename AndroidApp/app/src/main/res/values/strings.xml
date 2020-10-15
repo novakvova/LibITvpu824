@@ -13,4 +13,5 @@
     <string name="empty">Empty</string>
     <string name="selectImage">Choose photo</string>
     <string name="changeProfile">Update profile</string>
+    <string name="change_photo">Change photo</string>
 </resources>

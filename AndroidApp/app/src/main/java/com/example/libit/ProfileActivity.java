@@ -2,25 +2,39 @@ package com.example.libit;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Base64;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.example.libit.models.Photo;
 import com.example.libit.models.UserView;
 import com.example.libit.network.ImageRequester;
 import com.example.libit.network.NetworkService;
 import com.example.libit.network.SessionManager;
 import com.example.libit.network.utils.CommonUtils;
+import com.example.libit.network.utils.FileUtils;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Objects;
@@ -30,6 +44,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ProfileActivity extends AppCompatActivity {
+    private static final int PICKFILE_RESULT_CODE = 1;
     private ImageRequester imageRequester;
     private NetworkImageView editImage;
     private final String BASE_URL = NetworkService.getBaseUrl();
@@ -62,13 +77,124 @@ public class ProfileActivity extends AppCompatActivity {
         datePicker.show();
     }
 
+    private void showAlertDialogAndChangePhoto(final String photoBase64) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
+        builder.setMessage("Are you sure you want to change photo")
+                .setCancelable(false)
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        String url_photo = BASE_URL + "/images/" + userProfile.getPhoto();
+
+                        imageRequester.getImageLoader().get(url_photo, new ImageLoader.ImageListener() {
+                            @Override
+                            public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
+                                Bitmap bitmap = imageContainer.getBitmap();
+                                //use bitmap
+                                editImage.setImageBitmap(bitmap);
+                            }
+
+                            @Override
+                            public void onErrorResponse(VolleyError volleyError) {
+                            }
+                        });
+                    }
+                })
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        CommonUtils.showLoading(ProfileActivity.this);
+                        final Photo model = new Photo();
+                        model.setImageBase64(photoBase64);
+
+                        NetworkService.getInstance()
+                                .getJSONApi()
+                                .updatePhoto(model)
+                                .enqueue(new Callback<UserView>() {
+                                    @Override
+                                    public void onResponse(@NonNull Call<UserView> call, @NonNull Response<UserView> response) {
+                                        CommonUtils.hideLoading();
+                                        if (response.errorBody() == null && response.isSuccessful()) {
+                                            userProfile = response.body();
+                                            String succeed = "Update have been done";
+                                            Toast toast = Toast.makeText(getApplicationContext(),
+                                                    succeed, Toast.LENGTH_LONG);
+                                            toast.show();
+                                        } else {
+                                            String errorMessage;
+                                            try {
+                                                assert response.errorBody() != null;
+                                                errorMessage = response.errorBody().string();
+                                            } catch (IOException e) {
+                                                errorMessage = response.message();
+                                                e.printStackTrace();
+                                            }
+                                            Toast toast = Toast.makeText(getApplicationContext(),
+                                                    errorMessage, Toast.LENGTH_LONG);
+                                            toast.show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(@NonNull Call<UserView> call, @NonNull Throwable t) {
+                                        CommonUtils.hideLoading();
+                                        String error = "Error occurred while getting request!";
+                                        Toast toast = Toast.makeText(getApplicationContext(),
+                                                error, Toast.LENGTH_LONG);
+                                        toast.show();
+                                        t.printStackTrace();
+                                    }
+                                });
+                    }
+                });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICKFILE_RESULT_CODE) {
+            if (resultCode == -1) {
+                Uri fileUri = data.getData();
+                try {
+                    File imgFile = FileUtils.from(getApplicationContext(), fileUri);
+                    byte[] buffer = new byte[(int) imgFile.length() + 100];
+                    int length = new FileInputStream(imgFile).read(buffer);
+                    String chooseImageBase64 = Base64.encodeToString(buffer, 0, length, Base64.NO_WRAP);
+
+                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                    editImage.setImageBitmap(myBitmap);
+
+                    if (chooseImageBase64 != null && !chooseImageBase64.isEmpty()) {
+                        showAlertDialogAndChangePhoto(chooseImageBase64);
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void onClickSelectImage(View view) {
+        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+        chooseFile.setType("image/*");
+        chooseFile = Intent.createChooser(chooseFile, "Оберіть фото");
+        startActivityForResult(chooseFile, PICKFILE_RESULT_CODE);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
         imageRequester = ImageRequester.getInstance();
 
         editImage = findViewById(R.id.chooseImageProfile);
+        ImageView changeImageBrush = findViewById(R.id.chooseImageBrush);
+
         textEditName = findViewById(R.id.textProfileName);
         textEditSurname = findViewById(R.id.textProfileSurname);
 
@@ -77,6 +203,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         textEditPhone = findViewById(R.id.textProfilePhone);
         textEditEmail = findViewById(R.id.textProfileEmail);
+
         textEditBirthDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
@@ -93,6 +220,21 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        editImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onClickSelectImage(view);
+            }
+        });
+
+        changeImageBrush.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onClickSelectImage(view);
+            }
+        });
+
+        CommonUtils.showLoading(this);
         NetworkService.getInstance()
                 .getJSONApi()
                 .profile()
@@ -100,6 +242,7 @@ public class ProfileActivity extends AppCompatActivity {
                     @SuppressLint("SetTextI18n")
                     @Override
                     public void onResponse(@NonNull Call<UserView> call, @NonNull Response<UserView> response) {
+                        CommonUtils.hideLoading();
                         if (response.errorBody() == null && response.isSuccessful()) {
                             assert response.body() != null;
                             userProfile = response.body();
@@ -123,6 +266,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(@NonNull Call<UserView> call, @NonNull Throwable t) {
+                        CommonUtils.hideLoading();
                         userProfile = null;
                         t.printStackTrace();
                     }
@@ -150,7 +294,6 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         CommonUtils.showLoading(this);
-
         NetworkService.getInstance()
                 .getJSONApi()
                 .update(userUpdate)

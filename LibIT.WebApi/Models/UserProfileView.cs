@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace LibIT.WebApi.Models
 {
+    public class UserPhotoView
+    {
+        public string ImageBase64 { get; set; }
+    }
+
     public class UserProfileView
     {
         public string Name { get; set; }

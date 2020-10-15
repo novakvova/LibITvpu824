@@ -1,6 +1,7 @@
 package com.example.libit.network;
 
 import com.example.libit.models.LoginView;
+import com.example.libit.models.Photo;
 import com.example.libit.models.RegisterView;
 import com.example.libit.models.UserView;
 
@@ -20,4 +21,7 @@ public interface JSONPlaceHolderApi {
 
     @POST("/api/profile/update")
     Call<UserView> update(@Body UserView profile);
+
+    @POST("/api/profile/update-photo")
+    Call<UserView> updatePhoto(@Body Photo photo);
 }
