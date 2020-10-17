@@ -1,13 +1,6 @@
 package com.example.libit.data;
 
-import androidx.annotation.NonNull;
-
 import com.example.libit.models.UserView;
-import com.example.libit.network.NetworkService;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class UserRepository {
     private static volatile UserRepository instance;

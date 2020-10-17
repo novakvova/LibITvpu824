@@ -1,10 +1,10 @@
 package com.example.libit;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.toolbox.NetworkImageView;
 import com.example.libit.network.ImageRequester;

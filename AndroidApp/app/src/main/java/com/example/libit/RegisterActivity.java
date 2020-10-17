@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -14,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.toolbox.NetworkImageView;
-import com.example.libit.data.UserRepository;
 import com.example.libit.models.RegisterView;
 import com.example.libit.network.ImageRequester;
 import com.example.libit.network.NetworkService;

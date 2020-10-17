@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.toolbox.NetworkImageView;
-import com.example.libit.data.UserRepository;
 import com.example.libit.models.LoginView;
 import com.example.libit.network.ImageRequester;
 import com.example.libit.network.NetworkService;
