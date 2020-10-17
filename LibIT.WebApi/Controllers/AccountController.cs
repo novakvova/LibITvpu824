@@ -109,10 +109,27 @@ namespace LibIT.WebApi.Controllers
                 Name = "Empty",
                 Surname = "Empty",
                 DateOfBirth = new DateTime(2000, 1, 1),
-                Phone = "+000000000000",
+                Phone = "+380000000000",
                 RegistrationDate = DateTime.Now,
-                Photo = fileName
+                Photo = null
             };
+
+            if (!String.IsNullOrWhiteSpace(model.ImageBase64))
+            {
+                user.UserProfile.Photo = fileName;
+                var bmp = model.ImageBase64.FromBase64StringToImage();
+                var serverPath = _env.ContentRootPath; //Directory.GetCurrentDirectory(); //_env.WebRootPath;
+                var folerName = "Uploaded";
+                var path = Path.Combine(serverPath, folerName);
+
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                string filePathSave = Path.Combine(path, fileName);
+                bmp.Save(filePathSave, ImageFormat.Jpeg);
+            }
 
             var res = _userManager.CreateAsync(user, model.Password).Result;
             if (!res.Succeeded)
@@ -127,24 +144,8 @@ namespace LibIT.WebApi.Controllers
                 return BadRequest("Поганий запит!");
             }
 
-            var bmp = model.ImageBase64.FromBase64StringToImage();
-            var serverPath = _env.ContentRootPath; //Directory.GetCurrentDirectory(); //_env.WebRootPath;
-            var folerName = "Uploaded";
-            var path = Path.Combine(serverPath, folerName);
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-            
-
-            string filePathSave = Path.Combine(path, fileName);
-
-            bmp.Save(filePathSave, ImageFormat.Jpeg);
-
-
             await _signInManager.SignInAsync(user, isPersistent: false);
             
-
             return Ok(
                  new
                  {

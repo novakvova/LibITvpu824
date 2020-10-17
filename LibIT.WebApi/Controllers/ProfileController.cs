@@ -154,7 +154,7 @@ namespace LibIT.WebApi.Controllers
                 bmp.Save(filePathSave, ImageFormat.Jpeg);
 
                 // Check if file exists with its full path    
-                if (System.IO.File.Exists(Path.Combine(path, user.UserProfile.Photo)))
+                if (!String.IsNullOrWhiteSpace(user.UserProfile.Photo) && System.IO.File.Exists(Path.Combine(path, user.UserProfile.Photo)))
                 {
                     // If file found, delete it    
                     System.IO.File.Delete(Path.Combine(path, user.UserProfile.Photo));

@@ -1,6 +1,9 @@
 package com.example.libit;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import androidx.annotation.NonNull;
@@ -39,11 +42,23 @@ public class CategoriesActivity extends AppCompatActivity {
                             assert response.body() != null;
                             categories = response.body();
                             CategoriesAdapter adapter = new CategoriesAdapter(categories, CategoriesActivity.this);
+
                             gridView.setAdapter(adapter);
+                            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    Category category = categories.get(position);
+                                    Intent intent = new Intent(CategoriesActivity.this, ClickedCategoryActivity.class).
+                                            putExtra("category", category);
+                                    startActivity(intent);
+                                }
+                            });
+
                         } else {
                             categories = null;
                         }
                     }
+
                     @Override
                     public void onFailure(@NonNull Call<List<Category>> call, @NonNull Throwable t) {
                         CommonUtils.hideLoading();
