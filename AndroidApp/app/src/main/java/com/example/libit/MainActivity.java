@@ -33,4 +33,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, CategoriesActivity.class);
         startActivity(intent);
     }
+
+    public void btnShowCategoriesRecycler(View v) {
+        Intent intent = new Intent(this, CategoriesRecyclerActivity.class);
+        startActivity(intent);
+    }
 }
