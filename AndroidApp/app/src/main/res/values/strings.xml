@@ -14,6 +14,7 @@
     <string name="selectImage">Choose photo</string>
     <string name="changeProfile">Update profile</string>
     <string name="change_photo">Change photo</string>
+    <string name="view">View</string>
 
     <string name="categories">Categories</string>
     <string name="category_name">Назва новини</string>
