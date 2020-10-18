@@ -18,6 +18,7 @@ import com.example.libit.network.Tokens;
 import com.example.libit.network.utils.CommonUtils;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -66,9 +67,16 @@ public class LoginActivity extends AppCompatActivity {
                             Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
                             startActivity(intent);
                         } else {
-                            String error = "Login invalid!!!";
+                            String errorMessage;
+                            try {
+                                assert response.errorBody() != null;
+                                errorMessage = response.errorBody().string();
+                            } catch (IOException e) {
+                                errorMessage = response.message();
+                                e.printStackTrace();
+                            }
                             Toast toast = Toast.makeText(getApplicationContext(),
-                                    error, Toast.LENGTH_LONG);
+                                    errorMessage, Toast.LENGTH_LONG);
                             toast.show();
                         }
                     }

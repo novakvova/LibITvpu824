@@ -1,5 +1,7 @@
 package com.example.libit.models;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -20,15 +22,19 @@ public class UserView {
 
     @SerializedName("dateOfBirth")
     @Expose
-    private String dateOfBirth;
+    private Date dateOfBirth;
 
     @SerializedName("phone")
     @Expose
     private String phone;
 
+    @SerializedName("email")
+    @Expose
+    private String email;
+
     @SerializedName("registrationDate")
     @Expose
-    private String registrationDate;
+    private Date registrationDate;
 
     public String getName() {
         return name;
@@ -54,11 +60,11 @@ public class UserView {
         this.photo = photo;
     }
 
-    public String getDateOfBirth() {
+    public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
+    public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -70,11 +76,46 @@ public class UserView {
         this.phone = phone;
     }
 
-    public String getRegistrationDate() {
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Date getRegistrationDate() {
         return registrationDate;
     }
 
-    public void setRegistrationDate(String registrationDate) {
-        this.registrationDate = registrationDate;
+    public void setRegistrationDate(Date registrationDate) {
+        this.registrationDate = new Date(registrationDate.getTime());
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+
+        UserView another = (UserView) obj;
+        if (!this.name.equals(another.name))
+            return false;
+        if (!this.surname.equals(another.surname))
+            return false;
+        if (!this.dateOfBirth.equals(another.dateOfBirth))
+            return false;
+        if (!this.phone.equals(another.phone))
+            return false;
+        if (!this.photo.equals(another.photo))
+            return false;
+        if (!this.email.equals(another.email))
+            return false;
+        if (!this.registrationDate.equals(another.registrationDate))
+            return false;
+        return true;
     }
 }

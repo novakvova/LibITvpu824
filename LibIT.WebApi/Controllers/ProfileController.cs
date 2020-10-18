@@ -55,17 +55,16 @@ namespace LibIT.WebApi.Controllers
                 return BadRequest("Поганий запит!");
             }
 
-            UserProfileView userProfile = new UserProfileView(user.UserProfile);
+            UserProfileView userProfile = new UserProfileView(user); 
             return Ok(userProfile);
         }
 
-        [HttpPost("editprofile")]
-        //public IActionResult EditProfile([FromBody] UserProfileEditViewModel model)
-        public IActionResult EditProfile([FromBody]UserProfileEditViewModel model)
+        [HttpPost("update")]
+        public IActionResult ProfileUpdate([FromBody] UserProfileView model)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("Передані некоректні дані");
+                return BadRequest("Bad Model");
             }
 
             string userName;
@@ -78,81 +77,101 @@ namespace LibIT.WebApi.Controllers
                 return BadRequest("Потрібно спочатку залогінитися!");
             }
 
+            if (string.IsNullOrEmpty(userName))
+            {
+                return BadRequest("Потрібно спочатку залогінитися!");
+
+            }
+
             var query = _context.Users.Include(x => x.UserProfile).AsQueryable();
             var user = query.FirstOrDefault(c => c.UserName == userName);
 
             if (user == null)
             {
-                return BadRequest("");
+                return BadRequest("Поганий запит!");
             }
-            string ext = ".jpg";
-            string fileName = Path.GetRandomFileName() + ext;
-
-            var bmp = model.Photo.FromBase64StringToImage();
-            var serverPath = _env.ContentRootPath; //Directory.GetCurrentDirectory(); //_env.WebRootPath;
-            var folderName = "Uploaded";
-            var path = Path.Combine(serverPath, folderName); //
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-
-
-            string filePathSave = Path.Combine(path, fileName);
-
-            bmp.Save(filePathSave, ImageFormat.Jpeg);
-
-
-
-
-            // UserProfileEditViewModel userProfile = new UserProfileEditViewModel();
 
             user.UserProfile.Name = model.Name;
             user.UserProfile.Surname = model.Surname;
             user.UserProfile.DateOfBirth = model.DateOfBirth;
             user.UserProfile.Phone = model.Phone;
-            user.UserProfile.Photo = fileName;
-            //  user.PhoneNumber = model.Phone;
-
-            //user.UserProfile.Name = "Pavlo";
-            //user.UserProfile.Surname = "Pavloch";
-            //// user.UserProfile.DateOfBirth = model.DateOfBirth;
-            //user.UserProfile.Phone ="0791234569";
-            //// user.UserProfile.Photo = model.Photo;
-            ////  user.PhoneNumber = model.Phone;
+            user.PhoneNumber = model.Phone;
+            user.UserName = model.Email;
+            user.Email = model.Email;
             _context.SaveChanges();
 
-            UserProfileEditViewModel userProfile = new UserProfileEditViewModel(user.UserProfile);
-            return Ok(userProfile);
+            var result = new UserProfileView(user);
+            return Ok(result);
         }
 
-        [HttpPost("allusers")]
-        public IActionResult GetAllUsers1()
+        [HttpPost("update-photo")]
+        public IActionResult UserPhotoUpdate([FromBody] UserPhotoView model)
         {
-            //var query = _context.TypesOfDishes.AsQueryable();
-            var query = _context.Users.AsQueryable();
-
-            GetAllUsersViewModel result = new GetAllUsersViewModel();
-
-            result.AllUsers = query.Select(t => new GetUserViewModel
+            if (!ModelState.IsValid)
             {
-                Email = t.Email,
-                Name = t.UserProfile.Name
-            }).ToList();
+                return BadRequest("Bad Model");
+            }
 
-            return Ok(result.AllUsers);
-        }
-
-        [HttpGet("allusers")]
-        public async Task<IActionResult> GetAllUsers()
-        {
-            var users = await _context.Users.Select(x => new GetUserViewModel
+            string userName;
+            try
             {
-                Email = x.Email,
-                Name = x.UserProfile.Name
-            }).ToListAsync();
-            return Ok(users);
+                userName = User.Claims.FirstOrDefault(x => x.Type == "name").Value;
+            }
+            catch (Exception)
+            {
+                return BadRequest("Потрібно спочатку залогінитися!");
+            }
+
+            if (string.IsNullOrEmpty(userName))
+            {
+                return BadRequest("Потрібно спочатку залогінитися!");
+
+            }
+
+            var query = _context.Users.Include(x => x.UserProfile).AsQueryable();
+            var user = query.FirstOrDefault(c => c.UserName == userName);
+
+            if (user == null)
+            {
+                return BadRequest("Поганий запит!");
+            }
+
+            string ext = ".jpg";
+            string fileName = Path.GetRandomFileName() + ext;
+            var bmp = model.ImageBase64.FromBase64StringToImage();
+            var serverPath = _env.ContentRootPath;
+            var folerName = "Uploaded";
+            var path = Path.Combine(serverPath, folerName);
+            
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            try
+            {
+                string filePathSave = Path.Combine(path, fileName);
+                bmp.Save(filePathSave, ImageFormat.Jpeg);
+
+                // Check if file exists with its full path    
+                if (!String.IsNullOrWhiteSpace(user.UserProfile.Photo) && System.IO.File.Exists(Path.Combine(path, user.UserProfile.Photo)))
+                {
+                    // If file found, delete it    
+                    System.IO.File.Delete(Path.Combine(path, user.UserProfile.Photo));
+                    Console.WriteLine("File deleted.");
+                }
+                else Console.WriteLine("File not found");
+            }
+            catch (IOException ioExp)
+            {
+                return BadRequest(ioExp.Message);
+            }
+
+            user.UserProfile.Photo = fileName;
+            _context.SaveChanges();
+
+            var result = new UserProfileView(user);
+            return Ok(result);
         }
     }
 }
-

@@ -11,70 +11,131 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
-        <com.android.volley.toolbox.NetworkImageView
-            android:id="@+id/chooseImageProfile"
-            android:layout_width="200dp"
-            android:layout_height="150dp"
-            android:layout_marginTop="25dp"
-            android:layout_marginBottom="20dp"
-            android:layout_gravity="center_horizontal" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center_horizontal">
 
-        <TextView
-            android:id="@+id/textProfileName"
+            <com.android.volley.toolbox.NetworkImageView
+                android:id="@+id/chooseImageProfile"
+                android:layout_width="200dp"
+                android:layout_height="150dp" />
+
+            <ImageView
+                android:id="@+id/chooseImageBrush"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/chooseImageProfile"
+                android:src="@drawable/ic_brush"
+                android:layout_alignBottom="@id/chooseImageProfile"
+                android:layout_marginStart="0dp"
+                android:contentDescription="@string/change_photo" />
+        </RelativeLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/nameLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="20dp"
             android:layout_marginStart="50dp"
             android:layout_marginEnd="50dp"
-            android:text="@string/empty"
-            app:errorEnabled="true" />
+            android:hint="@string/name"
+            app:errorEnabled="true">
 
-        <TextView
-            android:id="@+id/textProfileSurname"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textProfileName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_user"
+                android:drawablePadding="10dp"
+                android:inputType="textNoSuggestions" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/surnameLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="20dp"
             android:layout_marginStart="50dp"
             android:layout_marginEnd="50dp"
-            android:text="@string/empty"
-            app:errorEnabled="true" />
+            android:hint="@string/surname"
+            app:errorEnabled="true">
 
-        <TextView
-            android:id="@+id/textProfileDateOfBirth"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textProfileSurname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_user_v2"
+                android:drawablePadding="10dp"
+                android:inputType="textNoSuggestions" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/dateOfBirthLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="20dp"
             android:layout_marginStart="50dp"
             android:layout_marginEnd="50dp"
-            android:text="@string/empty"
-            app:errorEnabled="true" />
+            android:hint="@string/birth_date"
+            app:errorEnabled="true">
 
-        <TextView
-            android:id="@+id/textProfilePhone"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textProfileDateOfBirth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="@string/name"
+                android:drawableStart="@drawable/ic_cake"
+                android:drawablePadding="10dp"
+                android:inputType="date" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/phoneLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="20dp"
             android:layout_marginStart="50dp"
             android:layout_marginEnd="50dp"
-            android:text="@string/empty"
-            app:errorEnabled="true" />
+            android:hint="@string/phone"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textProfilePhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_phone"
+                android:drawablePadding="10dp"
+                android:inputType="phone" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/emailLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:hint="@string/email"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textProfileEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_email"
+                android:drawablePadding="10dp"
+                android:inputType="textEmailAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/btnEditProfile"
-            android:layout_width="300dp"
+            android:id="@+id/buttonChangePhoto"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="20dp"
             android:layout_marginBottom="15dp"
-            android:onClick="onClickEditProfile"
-            android:text="@string/editProfile" />
+            android:background="@color/design_default_color_primary"
+            android:text="@string/changeProfile"
+            android:onClick="onClickUpdate"/>
     </LinearLayout>
-
-
 </ScrollView>

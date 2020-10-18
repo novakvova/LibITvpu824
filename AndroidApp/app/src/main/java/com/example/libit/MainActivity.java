@@ -19,20 +19,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-
-
-
-
         imageRequester = ImageRequester.getInstance();
         editImage = findViewById(R.id.chooseImage);
         imageRequester.setImageFromUrl(editImage, BASE_URL + "/images/testAvatarHen.jpg");
-    }
-
-    public void btnRegistration(View v) {
-        Intent intent = new Intent(this, RegisterActivity.class);
-        startActivity(intent);
     }
 
     public void btnLogin(View v) {
@@ -40,9 +29,13 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void onClickList(View view) {
-        Intent intent = new Intent(this, ListActivity.class);
+    public void btnShowCategories(View v) {
+        Intent intent = new Intent(this, CategoriesActivity.class);
         startActivity(intent);
+    }
 
+    public void btnShowCategoriesRecycler(View v) {
+        Intent intent = new Intent(this, CategoriesRecyclerActivity.class);
+        startActivity(intent);
     }
 }

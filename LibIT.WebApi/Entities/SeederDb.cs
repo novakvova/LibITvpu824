@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LibIT.WebApi.Entities
 {
@@ -80,13 +82,64 @@ namespace LibIT.WebApi.Entities
             }
         }
 
+        public static void SeedCategories(EFContext _context) {
+            if (_context.Categories.Count() <= 0)
+            {
+                var categories = new List<Category>();
+                categories.Add(new Category
+                {
+                    Name = "C, C++",
+                    Image = "cpp_logo.png"
+                });
+
+                categories.Add(new Category
+                {
+                    Name = ".NET, C#",
+                    Image = "c_sharp_logo.png"
+                }); 
+                
+                categories.Add(new Category
+                {
+                    Name = "Android",
+                    Image = "android_logo.png"
+                });
+
+                categories.Add(new Category
+                {
+                    Name = "Java",
+                    Image = "java_logo.png"
+                });
+
+                categories.Add(new Category
+                {
+                    Name = "Python",
+                    Image = "phyton_logo.png"
+                }); 
+                
+                categories.Add(new Category
+                {
+                    Name = "Database",
+                    Image = "database_logo.png"
+                });
+
+                foreach (var category in categories)
+                {
+                    _context.Categories.Add(category);
+                }
+
+                _context.SaveChanges();
+            }
+        }
+
         public static void SeedDataByAS(IServiceProvider services)
         {
             using (var scope = services.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 var manager = scope.ServiceProvider.GetRequiredService<UserManager<DbUser>>();
                 var managerRole = scope.ServiceProvider.GetRequiredService<RoleManager<DbRole>>();
+                var context = scope.ServiceProvider.GetRequiredService<EFContext>(); 
                 SeederDB.SeedData(manager, managerRole);
+                SeederDB.SeedCategories(context);
             }
         }
     }
