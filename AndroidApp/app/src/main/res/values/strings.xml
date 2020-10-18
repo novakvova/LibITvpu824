@@ -16,4 +16,5 @@
     <string name="change_photo">Change photo</string>
 
     <string name="categories">Categories</string>
+    <string name="category_name">Назва новини</string>
 </resources>
