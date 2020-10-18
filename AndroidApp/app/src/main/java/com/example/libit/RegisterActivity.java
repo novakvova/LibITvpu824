@@ -90,7 +90,6 @@ public class RegisterActivity extends AppCompatActivity {
             return;
 
         CommonUtils.showLoading(this);
-
         final RegisterView model = new RegisterView();
         model.setEmail(email.getText().toString());
         model.setPassword(password.getText().toString());
@@ -170,6 +169,4 @@ public class RegisterActivity extends AppCompatActivity {
         chooseFile = Intent.createChooser(chooseFile, "Оберіть фото");
         startActivityForResult(chooseFile, PICKFILE_RESULT_CODE);
     }
-
-
 }

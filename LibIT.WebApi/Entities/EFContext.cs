@@ -13,6 +13,7 @@ namespace LibIT.WebApi.Entities
        IdentityRoleClaim<long>, IdentityUserToken<long>>
     {
         public virtual DbSet<UserProfile> UserProfile { get; set; }
+        public virtual DbSet<Category> Categories { get; set; }
 
         public EFContext(DbContextOptions<EFContext> options) : base(options) { }
         protected override void OnModelCreating(ModelBuilder builder)

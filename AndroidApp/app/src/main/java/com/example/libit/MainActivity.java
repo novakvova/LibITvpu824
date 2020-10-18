@@ -28,4 +28,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
+
+    public void btnShowCategories(View v) {
+        Intent intent = new Intent(this, CategoriesActivity.class);
+        startActivity(intent);
+    }
 }
