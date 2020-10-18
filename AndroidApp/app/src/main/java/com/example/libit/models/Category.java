@@ -18,6 +18,15 @@ public class Category implements Serializable {
     @Expose
     public String image;
 
+    public Category() {
+    }
+
+    public Category(long id, String name, String image) {
+        this.id = id;
+        this.name = name;
+        this.image = image;
+    }
+
     public long getId() {
         return id;
     }
