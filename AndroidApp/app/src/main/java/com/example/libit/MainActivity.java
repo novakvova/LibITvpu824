@@ -39,4 +39,10 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
+
+    public void onClickList(View view) {
+        Intent intent = new Intent(this, ListActivity.class);
+        startActivity(intent);
+
+    }
 }

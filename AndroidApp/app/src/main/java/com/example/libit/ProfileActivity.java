@@ -1,5 +1,6 @@
 package com.example.libit;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -14,6 +15,8 @@ import com.example.libit.data.UserRepository;
 import com.example.libit.models.UserView;
 import com.example.libit.network.ImageRequester;
 import com.example.libit.network.NetworkService;
+
+import java.util.Calendar;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,6 +33,7 @@ public class ProfileActivity extends AppCompatActivity {
     TextView tvProfileSurname;
     TextView tvProfileBirthDate;
     TextView tvProfilePhone;
+    private final Calendar calendar = Calendar.getInstance();
 
     private Button btnEditProfile;
 
@@ -51,16 +55,23 @@ public class ProfileActivity extends AppCompatActivity {
                 .getJSONApi()
                 .profile()
                 .enqueue(new Callback<UserView>() {
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onResponse(@NonNull Call<UserView> call, @NonNull Response<UserView> response) {
                         if (response.errorBody() == null && response.isSuccessful()) {
                             assert response.body() != null;
                             userProfile = response.body();
 
+//                            calendar.setTime(userProfile.getDateOfBirth());
+//                            int day = calendar.get(Calendar.DAY_OF_MONTH);
+//                            int month = calendar.get(Calendar.MONTH);
+//                            int year = calendar.get(Calendar.YEAR);
+//                            tvProfileBirthDate.setText(day + "/" + (month + 1) + "/" + year);
+
                             imageRequester.setImageFromUrl(editImage, BASE_URL + "/images/" + userProfile.getPhoto());
                             tvProfileName.setText(userProfile.getName());
                             tvProfileSurname.setText(userProfile.getSurname());
-                            tvProfileBirthDate.setText(userProfile.getDateOfBirth());
+                            tvProfileBirthDate.setText(userProfile.getDateOfBirth().toString());
                             tvProfilePhone.setText(userProfile.getPhone());
 
                         } else {

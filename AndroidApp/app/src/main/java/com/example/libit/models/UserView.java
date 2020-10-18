@@ -3,6 +3,8 @@ package com.example.libit.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
 public class UserView {
     @SerializedName("name")
     @Expose
