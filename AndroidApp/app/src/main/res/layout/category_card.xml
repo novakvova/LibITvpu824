@@ -30,6 +30,24 @@
                 android:layout_height="wrap_content"
                 android:text="@string/category_name"
                 android:textSize="17sp" />
+
+<!--            <Button-->
+<!--                android:layout_below="@id/category_name"-->
+<!--                android:layout_width="50dp"-->
+<!--                android:layout_height="20dp"-->
+<!--                android:textSize="15sp"-->
+<!--                android:text="Переглянути">-->
+
+<!--            </Button>-->
+            <com.google.android.material.button.MaterialButton
+                android:layout_below="@id/category_name"
+                android:id="@+id/category_button"
+                style="?attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="3dp"
+                android:text="Перегляд категорії" />
+
         </RelativeLayout>
     </LinearLayout>
 
