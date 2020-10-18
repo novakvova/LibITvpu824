@@ -2,6 +2,8 @@ package com.example.libit.network;
 
 import com.example.libit.constants.Urls;
 import com.example.libit.network.interceptors.JWTInterceptor;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.concurrent.TimeUnit;
 
@@ -19,9 +21,13 @@ public class NetworkService {
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .addInterceptor(new JWTInterceptor());
 
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+                .create();
+
         mRetrofit = new Retrofit.Builder()
                 .baseUrl(Urls.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(client.build())
                 .build();
     }
