@@ -21,4 +21,12 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@id/categoryImage" />
 
+<Button
+    android:id="@+id/categoryButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/design_default_color_primary"
+    android:text="@string/view"
+    android:layout_below="@id/categoryName"
+    android:layout_centerHorizontal="true"/>
 </RelativeLayout>

@@ -11,7 +11,7 @@ import com.example.libit.models.Category;
 import com.example.libit.network.ImageRequester;
 import com.example.libit.network.NetworkService;
 
-public class ClickedCategoryActivity extends AppCompatActivity {
+    public class ClickedCategoryActivity extends AppCompatActivity {
     private final String BASE_URL = NetworkService.getBaseUrl();
 
     @Override

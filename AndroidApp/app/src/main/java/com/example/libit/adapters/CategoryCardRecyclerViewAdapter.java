@@ -1,6 +1,7 @@
 package com.example.libit.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.libit.ClickedCategoryActivity;
 import com.example.libit.click_listeners.OnDeleteListener;
 import com.example.libit.models.Category;
 import com.example.libit.network.ImageRequester;
@@ -40,9 +42,9 @@ public class CategoryCardRecyclerViewAdapter extends RecyclerView.Adapter<Catego
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CategoryCardViewHolder holder, final int position) {
+    public void onBindViewHolder(final @NonNull CategoryCardViewHolder holder, final int position) {
         if (categoryList != null && position < categoryList.size()) {
-            Category category = categoryList.get(position);
+            final Category category = categoryList.get(position);
             holder.category_name.setText(category.getName());
 
             holder.getView().setOnLongClickListener(new View.OnLongClickListener() {
@@ -50,6 +52,15 @@ public class CategoryCardRecyclerViewAdapter extends RecyclerView.Adapter<Catego
                 public boolean onLongClick(View v) {
                     deleteListener.deleteItem(categoryList.get(position));
                     return true;
+                }
+            });
+
+            holder.category_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(holder.itemView.getContext(), ClickedCategoryActivity.class).
+                            putExtra("category", category);
+                    holder.itemView.getContext().startActivity(intent);
                 }
             });
             String url = BASE_URL + "/images/" + category.getImage();
