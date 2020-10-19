@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
+    android:background="@drawable/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -16,7 +16,7 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_margin="10dp"
             android:layout_gravity="center_horizontal">
 
             <com.android.volley.toolbox.NetworkImageView
@@ -31,7 +31,6 @@
                 android:layout_toEndOf="@id/chooseImageProfile"
                 android:src="@drawable/ic_brush"
                 android:layout_alignBottom="@id/chooseImageProfile"
-                android:layout_marginStart="0dp"
                 android:contentDescription="@string/change_photo" />
         </RelativeLayout>
 
@@ -132,8 +131,6 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="15dp"
             android:background="@color/design_default_color_primary"
             android:text="@string/changeProfile"
             android:onClick="onClickUpdate"/>

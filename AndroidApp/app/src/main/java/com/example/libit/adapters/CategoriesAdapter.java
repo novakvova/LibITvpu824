@@ -63,19 +63,10 @@ public class CategoriesAdapter extends BaseAdapter {
         }
         TextView tvCategoryName = convertView.findViewById(R.id.categoryName);
         NetworkImageView imageCategory = convertView.findViewById(R.id.categoryImage);
-        Button btn = convertView.findViewById(R.id.categoryButton);
 
         tvCategoryName.setText(categories.get(position).getName());
         imageRequester.setImageFromUrl(imageCategory, BASE_URL + "/images/" + categories.get(position).getImage());
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Category category = categories.get(position);
-                Intent intent = new Intent(context, ClickedCategoryActivity.class).
-                        putExtra("category", category);
-                context.startActivity(intent);
-            }
-        });
+
         return convertView;
     }
 }
