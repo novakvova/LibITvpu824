@@ -110,7 +110,7 @@ public class RegisterActivity extends AppCompatActivity {
                             sessionManager.saveJWTToken(token.getToken());
                             sessionManager.saveUserLogin(model.getEmail());
 
-                            Intent intent = new Intent(RegisterActivity.this, ProfileActivity.class);
+                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                             startActivity(intent);
                         } else {
                             String errorMessage;

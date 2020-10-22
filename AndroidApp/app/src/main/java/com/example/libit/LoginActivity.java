@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.toolbox.NetworkImageView;
-import com.example.libit.data.UserRepository;
 import com.example.libit.models.LoginView;
 import com.example.libit.network.ImageRequester;
 import com.example.libit.network.NetworkService;
@@ -64,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
                             sessionManager.saveJWTToken(token.getToken());
                             sessionManager.saveUserLogin(model.getEmail());
 
-                            Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
                         } else {
                             String errorMessage;

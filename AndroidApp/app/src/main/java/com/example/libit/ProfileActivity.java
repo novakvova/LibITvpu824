@@ -49,6 +49,7 @@ public class ProfileActivity extends AppCompatActivity {
     private NetworkImageView editImage;
     private final String BASE_URL = NetworkService.getBaseUrl();
     private UserView userProfile;
+    private SessionManager sessionManager;
     private final Calendar calendar = Calendar.getInstance();
     private TextInputEditText textEditName;
     private TextInputEditText textEditSurname;
@@ -189,7 +190,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
+        sessionManager = SessionManager.getInstance(ProfileActivity.this);
         imageRequester = ImageRequester.getInstance();
 
         editImage = findViewById(R.id.chooseImageProfile);
@@ -247,7 +248,11 @@ public class ProfileActivity extends AppCompatActivity {
                             assert response.body() != null;
                             userProfile = response.body();
 
-                            imageRequester.setImageFromUrl(editImage, BASE_URL + "/images/" + userProfile.getPhoto());
+                            if (userProfile.getPhoto() == null || userProfile.getPhoto().isEmpty()) {
+                                imageRequester.setImageFromUrl(editImage, BASE_URL + "/images/testAvatarHen.jpg");
+                            } else {
+                                imageRequester.setImageFromUrl(editImage, BASE_URL + "/images/" + userProfile.getPhoto());
+                            }
                             textEditName.setText(userProfile.getName());
                             textEditSurname.setText(userProfile.getSurname());
 
@@ -303,8 +308,6 @@ public class ProfileActivity extends AppCompatActivity {
                         CommonUtils.hideLoading();
                         if (response.errorBody() == null && response.isSuccessful()) {
                             userProfile = response.body();
-
-                            SessionManager sessionManager = SessionManager.getInstance(ProfileActivity.this);
                             sessionManager.saveUserLogin(userProfile.getEmail());
 
                             String succeed = "Update have been done";
