@@ -98,7 +98,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="15dp"
             android:onClick="onClickSave"
-            android:text="@string/saveChanges" />
+            android:text="saveChanges" />
 
 
     </LinearLayout>

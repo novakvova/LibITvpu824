@@ -58,59 +58,59 @@ public class ListActivity extends AppCompatActivity {
 //        countriesList.setOnItemClickListener(itemListener);
 
 
-        NetworkService.getInstance()
-                .getJSONApi()
-                .getuserslist()
-                .enqueue(new Callback<List<ProfileView>>() {
-                    @Override
-                    public void onResponse(@NonNull Call<List<ProfileView>> call, @NonNull Response<List<ProfileView>> response) {
-                        if (response.errorBody() == null && response.isSuccessful()) {
-                            assert response.body() != null;
-                            List<ProfileView> retUsers = response.body();
-                            users = response.body();
-
-
-                            usersList = (ListView) findViewById(R.id.listView);
-                            // создаем адаптер
-                            UserAdapter userAdapter = new UserAdapter(ListActivity.this, R.layout.list_item, users);
-                            // устанавливаем адаптер
-                            usersList.setAdapter(userAdapter);
-                            // слушатель выбора в списке
-                            AdapterView.OnItemClickListener itemListener = new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-
-                                    // получаем выбранный пункт
-                                    ProfileView selectedUser = (ProfileView)parent.getItemAtPosition(position);
-                                    Toast.makeText(getApplicationContext(), "Был выбран пункт " + selectedUser.getName(),
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            };
-                            usersList.setOnItemClickListener(itemListener);
-
-                            for (ProfileView item: retUsers) {
-                                Toast.makeText(getApplicationContext(), "Был выбран пункт " + item.getName(),
-                                        Toast.LENGTH_SHORT).show();
-                            }
-
-
-//                            imageRequester.setImageFromUrl(editImage, BASE_URL + "/images/" + userProfile.getPhoto());
-//                            tvProfileName.setText(userProfile.getName());
-//                            tvProfileSurname.setText(userProfile.getSurname());
-//                            tvProfileBirthDate.setText(userProfile.getDateOfBirth());
-//                            tvProfilePhone.setText(userProfile.getPhone());
-
-                        } else {
-                            userProfile = null;
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<List<ProfileView>> call, @NonNull Throwable t) {
-                        userProfile = null;
-                        t.printStackTrace();
-                    }
-                });
+//        NetworkService.getInstance()
+//                .getJSONApi()
+//                .getuserslist()
+//                .enqueue(new Callback<List<ProfileView>>() {
+//                    @Override
+//                    public void onResponse(@NonNull Call<List<ProfileView>> call, @NonNull Response<List<ProfileView>> response) {
+//                        if (response.errorBody() == null && response.isSuccessful()) {
+//                            assert response.body() != null;
+//                            List<ProfileView> retUsers = response.body();
+//                            users = response.body();
+//
+//
+//                            usersList = (ListView) findViewById(R.id.listView);
+//                            // создаем адаптер
+//                            UserAdapter userAdapter = new UserAdapter(ListActivity.this, R.layout.list_item, users);
+//                            // устанавливаем адаптер
+//                            usersList.setAdapter(userAdapter);
+//                            // слушатель выбора в списке
+//                            AdapterView.OnItemClickListener itemListener = new AdapterView.OnItemClickListener() {
+//                                @Override
+//                                public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+//
+//                                    // получаем выбранный пункт
+//                                    ProfileView selectedUser = (ProfileView)parent.getItemAtPosition(position);
+//                                    Toast.makeText(getApplicationContext(), "Был выбран пункт " + selectedUser.getName(),
+//                                            Toast.LENGTH_SHORT).show();
+//                                }
+//                            };
+//                            usersList.setOnItemClickListener(itemListener);
+//
+//                            for (ProfileView item: retUsers) {
+//                                Toast.makeText(getApplicationContext(), "Был выбран пункт " + item.getName(),
+//                                        Toast.LENGTH_SHORT).show();
+//                            }
+//
+//
+////                            imageRequester.setImageFromUrl(editImage, BASE_URL + "/images/" + userProfile.getPhoto());
+////                            tvProfileName.setText(userProfile.getName());
+////                            tvProfileSurname.setText(userProfile.getSurname());
+////                            tvProfileBirthDate.setText(userProfile.getDateOfBirth());
+////                            tvProfilePhone.setText(userProfile.getPhone());
+//
+//                        } else {
+//                            userProfile = null;
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(@NonNull Call<List<ProfileView>> call, @NonNull Throwable t) {
+//                        userProfile = null;
+//                        t.printStackTrace();
+//                    }
+//                });
 
 
 

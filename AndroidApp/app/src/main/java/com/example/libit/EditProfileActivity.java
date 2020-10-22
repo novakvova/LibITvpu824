@@ -57,7 +57,7 @@ public class EditProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-        currentDateTime = (TextView) findViewById(R.id.currentDateTime);
+        //currentDateTime = (TextView) findViewById(R.id.currentDateTime);
         setInitialDateTime();
 
         btnSave = findViewById(R.id.btnSave);
@@ -137,42 +137,42 @@ public class EditProfileActivity extends AppCompatActivity {
         model.setSurname(surname.getText().toString());
         model.setPhoto(chooseImageBase64);
        // model.setDateOfBirth(dateAndTime.getTime());
-
-
-        NetworkService.getInstance()
-                .getJSONApi()
-                .edit(model)
-                .enqueue(new Callback<UserView>() {
-                    @Override
-                    public void onResponse(@NonNull Call<UserView> call, @NonNull Response<UserView> response) {
-                        CommonUtils.hideLoading();
-                        if (response.errorBody() == null && response.isSuccessful()) {
-                            assert response.body() != null;
-                            userProfile = response.body();
-
-                            //imageRequester.setImageFromUrl(editImage, BASE_URL + "/images/" + userProfile.getPhoto());
-                            name.setText(userProfile.getName());
-                            surname.setText(userProfile.getSurname());
-                            // tvProfileBirthDate.setText(userProfile.getDateOfBirth());
-                            phone.setText(userProfile.getPhone());
-                            Intent intent = new Intent(EditProfileActivity.this, ProfileActivity.class);
-                            startActivity(intent);
-
-                        } else {
-                            userProfile = null;
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<UserView> call, @NonNull Throwable t) {
-                        CommonUtils.hideLoading();
-                        String error = "Error occurred while getting request!";
-                        Toast toast = Toast.makeText(getApplicationContext(),
-                                error, Toast.LENGTH_LONG);
-                        toast.show();
-                        t.printStackTrace();
-                    }
-                });
+//
+//
+//        NetworkService.getInstance()
+//                .getJSONApi()
+//                .update()
+//                .enqueue(new Callback<UserView>() {
+//                    @Override
+//                    public void onResponse(@NonNull Call<UserView> call, @NonNull Response<UserView> response) {
+//                        CommonUtils.hideLoading();
+//                        if (response.errorBody() == null && response.isSuccessful()) {
+//                            assert response.body() != null;
+//                            userProfile = response.body();
+//
+//                            //imageRequester.setImageFromUrl(editImage, BASE_URL + "/images/" + userProfile.getPhoto());
+//                            name.setText(userProfile.getName());
+//                            surname.setText(userProfile.getSurname());
+//                            // tvProfileBirthDate.setText(userProfile.getDateOfBirth());
+//                            phone.setText(userProfile.getPhone());
+//                            Intent intent = new Intent(EditProfileActivity.this, ProfileActivity.class);
+//                            startActivity(intent);
+//
+//                        } else {
+//                            userProfile = null;
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(@NonNull Call<UserView> call, @NonNull Throwable t) {
+//                        CommonUtils.hideLoading();
+//                        String error = "Error occurred while getting request!";
+//                        Toast toast = Toast.makeText(getApplicationContext(),
+//                                error, Toast.LENGTH_LONG);
+//                        toast.show();
+//                        t.printStackTrace();
+//                    }
+//                });
 
     }
 
