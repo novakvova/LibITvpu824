@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -106,6 +107,10 @@ public class MainActivity extends AppCompatActivity {
                 toast.show();
                 drawerLayout.closeDrawers();
                 break;
+            case R.id.upload:
+                intent = new Intent(this, UploadActivity.class);
+                startActivity(intent);
+                break;
             default:
                 return false;
         }
@@ -119,4 +124,5 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

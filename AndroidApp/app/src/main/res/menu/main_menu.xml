@@ -32,5 +32,9 @@
         android:id="@+id/logout"
         android:icon="@drawable/ic_exit"
         android:title="Logout" />
+    <item
+        android:id="@+id/upload"
+        android:icon="@drawable/ic_categories"
+        android:title="Upload" />
 
 </menu>

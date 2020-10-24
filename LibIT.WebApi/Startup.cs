@@ -93,7 +93,7 @@ namespace LibIT.WebApi
                 .AddDefaultTokenProviders();
 
             services.AddTransient<IJwtTokenService, JwtTokenService>();
-
+            services.AddTransient<FileService, FileService>(); //!!!!!!!
             //var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Kesha-kapitan-krasavchik"));
             var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetValue<string>("SecretPhrase")));
 

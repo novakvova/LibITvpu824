@@ -16,4 +16,21 @@ namespace LibIT.WebApi.Models
         public string Name { get; set; }
         public string Image { get; set; }
     }
+
+    public class BookViewModel
+    {
+        public long Id { get; set; }
+        public string Author { get; set; }
+        public string Name { get; set; }
+        public string Image { get; set; }
+        public long CategoryId { get; set; }
+    }
+
+    public class BookAddViewModel
+    {
+        public string Author { get; set; }
+        public string Name { get; set; }
+        public string Image { get; set; }
+        public long CategoryId { get; set; }
+    }
 }

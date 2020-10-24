@@ -14,6 +14,7 @@ namespace LibIT.WebApi.Entities
     {
         public virtual DbSet<UserProfile> UserProfile { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
+        public virtual DbSet<Book> Books { get; set; }
 
         public EFContext(DbContextOptions<EFContext> options) : base(options) { }
         protected override void OnModelCreating(ModelBuilder builder)

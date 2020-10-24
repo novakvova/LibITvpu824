@@ -131,6 +131,27 @@ namespace LibIT.WebApi.Entities
             }
         }
 
+        public static void SeedBooks(EFContext _context)
+        {
+            if (_context.Books.Count() <= 0)
+            {
+                var books = new List<Book>();
+                books.Add(new Book
+                {
+                    Author = "Стивен Прата",
+                    Name = "Язык программирования С",
+                    Image = "prata_c.jpg",
+                    CategoryId = 2
+                });
+
+                foreach (var book in books)
+                {
+                    _context.Books.Add(book);
+                }
+                _context.SaveChanges();
+            }
+        }
+
         public static void SeedDataByAS(IServiceProvider services)
         {
             using (var scope = services.GetRequiredService<IServiceScopeFactory>().CreateScope())
@@ -140,6 +161,7 @@ namespace LibIT.WebApi.Entities
                 var context = scope.ServiceProvider.GetRequiredService<EFContext>(); 
                 SeederDB.SeedData(manager, managerRole);
                 SeederDB.SeedCategories(context);
+                SeederDB.SeedBooks(context);
             }
         }
     }
