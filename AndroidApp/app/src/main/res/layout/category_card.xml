@@ -16,8 +16,8 @@
             android:id="@+id/category_image"
             android:layout_width="120dp"
             android:layout_height="80dp"
-            android:background="?attr/colorPrimaryDark"
-            android:scaleType="centerCrop" />
+
+            android:scaleType="centerInside" />
 
         <RelativeLayout
             android:layout_width="match_parent"

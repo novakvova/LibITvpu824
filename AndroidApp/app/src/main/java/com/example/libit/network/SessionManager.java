@@ -8,13 +8,15 @@ import com.example.libit.R;
 
 public class SessionManager {
     private static SessionManager instance = null;
-    private SharedPreferences prefs;
+    private final SharedPreferences prefs;
     private final String USER_TOKEN = "user_token";
     private final String USER_LOGIN = "user_login";
     private final String USER_NAME = "user_name";
+    public boolean isLogged;
 
     private SessionManager(Context context) {
         prefs = context.getSharedPreferences(context.getString(R.string.app_name), Context.MODE_PRIVATE);
+        isLogged = fetchAuthToken() != null;
     }
 
     public static SessionManager getInstance(Context context) {
@@ -30,6 +32,7 @@ public class SessionManager {
             edit.putString(USER_TOKEN, token);
             Log.i(USER_TOKEN, token);
             edit.apply();
+            isLogged = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -54,7 +57,7 @@ public class SessionManager {
         }
     }
 
-    public String fetchUserName () {
+    public String fetchUserName() {
         return prefs.getString(USER_NAME, null);
     }
 
@@ -69,7 +72,18 @@ public class SessionManager {
         }
     }
 
-    public String fetchUserLogin () {
+    public String fetchUserLogin() {
         return prefs.getString(USER_LOGIN, null);
+    }
+
+    public void logout() {
+        SharedPreferences.Editor edit = prefs.edit();
+        try {
+            edit.clear();
+            edit.apply();
+            isLogged = false;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

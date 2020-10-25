@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
                             sessionManager.saveJWTToken(token.getToken());
                             sessionManager.saveUserLogin(model.getEmail());
 
-                            Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
                         } else {
                             String errorMessage;

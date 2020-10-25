@@ -78,16 +78,16 @@ public class CategoriesActivity extends AppCompatActivity {
                                     return true;
                                 }
                             });
-//
-//                            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                                @Override
-//                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                                    Category category = categories.get(position);
-//                                    Intent intent = new Intent(CategoriesActivity.this, ClickedCategoryActivity.class).
-//                                            putExtra("category", category);
-//                                    startActivity(intent);
-//                                }
-//                            });
+
+                            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    Category category = categories.get(position);
+                                    Intent intent = new Intent(CategoriesActivity.this, ClickedCategoryActivity.class).
+                                            putExtra("category", category);
+                                    startActivity(intent);
+                                }
+                            });
 
                         } else {
                             categories = null;
