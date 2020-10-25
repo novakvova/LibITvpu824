@@ -38,5 +38,15 @@ namespace LibIT.WebApi.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("add-file")]
+        public IActionResult UpdateFile()
+        {
+
+            ServerResponse serverResponse = new ServerResponse();
+            serverResponse.Success = true;
+            serverResponse.Message = "Cool!";
+            return Ok(serverResponse);
+        }
     }
 }
