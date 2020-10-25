@@ -74,11 +74,13 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(this, CategoriesRecyclerActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.search:
-                toast = Toast.makeText(getApplicationContext(),
-                        "You have clicked SEARCH", Toast.LENGTH_LONG);
-                toast.show();
-                drawerLayout.closeDrawers();
+            case R.id.uploadFile:
+                intent = new Intent(this, UpdateFileActivity.class);
+                startActivity(intent);
+//                toast = Toast.makeText(getApplicationContext(),
+//                        "You have clicked SEARCH", Toast.LENGTH_LONG);
+//                toast.show();
+//                drawerLayout.closeDrawers();
                 break;
             case R.id.login:
                 intent = new Intent(this, LoginActivity.class);
