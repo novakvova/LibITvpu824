@@ -11,8 +11,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LibIT.WebApi.Controllers
 {
+    public class MyModel
+    {
+        public IFormFile File { get; set; }
+    }
     [Route("api/[controller]")]
-    [ApiController]
+    [Produces("multipart/form-data")]
+    //[ApiController]
     //[Authorize]
     public class LibraryController : ControllerBase
     {
@@ -37,6 +42,25 @@ namespace LibIT.WebApi.Controllers
             }).ToList();
 
             return Ok(result);
+        }
+
+        [HttpPost("uploader")]
+        //[Consumes("application/x-www-form-urlencoded")]
+        public IActionResult UploaderFile(MyModel model)
+        {
+            var files = Request.Form.Files;
+            //var query = _context.Categories.AsQueryable();
+
+            //ICollection<CategoryViewModel> result;
+
+            //result = query.Select(c => new CategoryViewModel
+            //{
+            //    Id = c.Id,
+            //    Name = c.Name,
+            //    Image = c.Image
+            //}).ToList();
+
+            return Ok();
         }
     }
 }
